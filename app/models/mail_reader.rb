@@ -7,7 +7,7 @@ class MailReader < ActionMailer::Base
     author = User.find :first, :select=>"users.id", :joins=>"inner join members on members.user_id = users.id",
                                :conditions=>["members.project_id=? AND users.mail=?", @@project.id, @@from_email]
 
-    category = Category.find :first, :conditions => ["name = ?", "Внешняя заявка"]
+    category = IssueCategory.find :first, :conditions => ["name = ?", "Внешняя заявка"]
     
     if author.nil?
        author_id = (Member.find_by_project_id @@project.id).id
