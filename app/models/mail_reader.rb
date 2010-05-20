@@ -6,6 +6,8 @@ class MailReader < ActionMailer::Base
     # user that is returned from the Member model
     author = User.find :first, :select=>"users.id", :joins=>"inner join members on members.user_id = users.id",
                                :conditions=>["members.project_id=? AND users.mail=?", @@project.id, @@from_email]
+
+    category = Category.find :first, :conditions => ["name = ?", "Внешняя заявка"]
     
     if author.nil?
        author_id = (Member.find_by_project_id @@project.id).id
@@ -20,7 +22,9 @@ class MailReader < ActionMailer::Base
         :project_id => @@project.id,
         :tracker_id => 3,
         :author_id => author_id,
-        :status_id => 1        
+        :status_id => 1,
+        :category_id => category.id,
+        :start_date => Time.now
     )
     
     if email.has_attachments?
