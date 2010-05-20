@@ -4,8 +4,8 @@ class MailReader < ActionMailer::Base
     # If the email exists for a user in the current project,
     # use that user as the author.  Otherwise, use the first
     # user that is returned from the Member model
-    author = User.find_by_mail @@from_email, :select=>"users.id", :joins=>"inner join members on members.user_id = users.id",
-                              :conditions=>["members.project_id=?", @@project.id]
+    author = User.find :first, :select=>"users.id", :joins=>"inner join members on members.user_id = users.id",
+                               :conditions=>["members.project_id=? AND users.mail=?", @@project.id, @@from_email]
     
     if author.nil?
        author_id = (Member.find_by_project_id @@project.id).id
